@@ -1,0 +1,18 @@
+{
+  "UniformDataTypeDeclarations": [
+    {
+      "TypeId": "io.github.tangencylabs.solidcraft.hmos.solidcraft",
+      "BelongingToTypes": [
+        "general.file"
+      ],
+      "FilenameExtensions": [
+        ".solidcraft"
+      ],
+      "MIMETypes": [
+        "application/x-solidcraft"
+      ],
+      "Description": "SolidCraft design",
+      "ReferenceURL": ""
+    }
+  ]
+}

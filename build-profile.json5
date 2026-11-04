@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001A354F9A59EA33A849B09C0A6236DD17B905F334CC605D44BAD3AE04265CCF4A6F83EE54EB9EF8",
+          "profile": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.p12",
+          "storePassword": "0000001A8D2E67524531C4386DEDAF7F06DE38CC8B3877346024BEB2A325E8A060C9BDC4EDF6C6F5D2A2"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "26.0.0",
+        "compatibleSdkVersion": "26.0.0",
+        "runtimeOS": "HarmonyOS"
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
+    ],
+    "capabilities": [
+      {
+        "bundleName": "io.github.shaliuxin.solidcraft.hmos",
+        "config": []
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+# HarmonyOS (OHOS) cross-link configuration for the local DevEco Studio SDK.
+#
+# The OHOS native toolchain ships a clang.exe plus a sysroot. On Windows the
+# `*-unknown-linux-ohos-clang` wrappers are POSIX shell scripts, so rustc must
+# be pointed directly at clang.exe with an explicit --target and -sysroot.
+#
+# Override the SDK location with SOLIDCRAFT_NATIVE_SDK / DEVECO_SDK_HOME if the
+# toolchain lives elsewhere; these paths assume the default Windows install:
+#   C:\Program Files\Huawei\DevEco Studio\sdk\default\openharmony\native
+
+[target.aarch64-unknown-linux-ohos]
+linker = "C:/Program Files/Huawei/DevEco Studio/sdk/default/openharmony/native/llvm/bin/clang.exe"
+rustflags = [
+  "-C", "link-arg=--target=aarch64-linux-ohos",
+  "-C", "link-arg=--sysroot=C:/Program Files/Huawei/DevEco Studio/sdk/default/openharmony/native/sysroot",
+]
+
+[target.x86_64-unknown-linux-ohos]
+linker = "C:/Program Files/Huawei/DevEco Studio/sdk/default/openharmony/native/llvm/bin/clang.exe"
+rustflags = [
+  "-C", "link-arg=--target=x86_64-linux-ohos",
+  "-C", "link-arg=--sysroot=C:/Program Files/Huawei/DevEco Studio/sdk/default/openharmony/native/sysroot",
+]
+
+[build]
+# Keep network off during verification; all deps are vendored / in the registry cache.
