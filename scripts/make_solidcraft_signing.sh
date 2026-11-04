@@ -15,12 +15,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/signing"
 BUNDLE="${SC_BUNDLE:-io.github.shaliuxin.solidcraft.hmos}"
 KEYALIAS="solidcraft-debug"
-# 固定口令（仅本地调试用，别用于发布）
-KEYPW="sc_dbg_key_20261104_a1b2c3d4e5f6g7h8i9j0k"
-STOREPW="sc_dbg_store_20261104_0f1e2d3c4b5a6g7h8i9j0"
-# 设备 UDID（取自已有 profile，HPR-W72 在其中）
-UID1="B700BA9C45AEFBE60C1C5510B72D7A9A7FAC84F23EE05BB6BC243339DB9A2AA4"
-UID2="90243F3456A3C80C9F2F4467B931FDFE1005A461328D7CF934FA8F49F9A5877F"
+# 口令与设备 UDID 不入库：从环境变量读取（本地调试时自行 export）。
+#   export SC_KEYPW=... SC_STOREPW=... SC_UID1=<设备UDID> SC_UID2=<设备UDID>
+# 切勿把真实口令/UDID 写回脚本或提交到公开仓库。
+KEYPW="${SC_KEYPW:?请 export SC_KEYPW（本地调试 CA 密钥口令，勿入库）}"
+STOREPW="${SC_STOREPW:?请 export SC_STOREPW（本地调试 CA 库口令，勿入库）}"
+UID1="${SC_UID1:?请 export SC_UID1（设备 UDID，勿入库）}"
+UID2="${SC_UID2:?请 export SC_UID2（设备 UDID，勿入库）}"
 
 mkdir -p "$OUT"
 cd "$OUT"
