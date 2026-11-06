@@ -3,6 +3,9 @@ use egui::{Event, Key, Modifiers, PointerButton, Pos2, TouchDeviceId, TouchId, T
 use serde::Deserialize;
 use std::collections::BTreeMap;
 
+/// OHOS 的轴事件一档滚轮约报 6 个单位，egui 的标准一档约 50 点，故乘 8 换算。
+const WHEEL_POINTS_PER_UNIT: f32 = 8.0;
+
 /// 平台坐标（物理像素）在 ArkTS 侧上报；egui 事件用点（除以 scale）。
 #[derive(Deserialize, Default)]
 pub struct Contact {
@@ -28,6 +31,10 @@ pub struct Input {
     pub x: f32,
     #[serde(default)]
     pub y: f32,
+    /// 触摸抬起时为 1，表示 `x`/`y` 是抬起点的位置（桥在 UP 事件里单独带出，
+    /// 因为 UP 的触点不在 `points` 里）。
+    #[serde(default)]
+    pub up: i32,
     #[serde(default)]
     pub button: i32,
     #[serde(default)]
@@ -102,25 +109,41 @@ impl State {
                     .iter()
                     .map(|p| (p.id, Pos2::new(p.x / scale, p.y / scale)))
                     .collect();
+                // 抬起点：桥在 UP 事件里把位置放在顶层 x/y（UP 的触点不进 points）。
+                let up_pos = if input.up != 0 {
+                    Some(Pos2::new(input.x / scale, input.y / scale))
+                } else {
+                    None
+                };
                 for (&id, &p) in &self.touches {
                     if !next.contains_key(&id) {
+                        let pos = up_pos.unwrap_or(p);
                         events.push(Event::Touch {
                             device_id: TouchDeviceId(0),
                             id: TouchId(id),
                             phase: TouchPhase::End,
-                            pos: p,
+                            pos,
                             force: None,
                         });
                         if self.touch_pointer == Some(id) {
                             if let Some(button) = self.pressed.take() {
+                                // 先把指针挪到抬起点，再 release：egui 的 click 判定用的是
+                                // 释放瞬间的指针位置，位置缺失会让 `clicked()` 永远为假。
+                                // 这里只动字段而不调 self.move_pointer()：外层正借着
+                                // &self.touches 迭代，整借 &mut self 会冲突。
+                                self.last_pointer = Some(pos);
+                                events.push(Event::PointerMoved(pos));
                                 events.push(Event::PointerButton {
-                                    pos: p,
+                                    pos,
                                     button,
                                     pressed: false,
                                     modifiers: self.modifiers,
                                 });
                             }
-                            events.push(Event::PointerGone);
+                            // 注意：这里不能紧跟着发 PointerGone。egui 在 PointerGone 里会
+                            // 清空 interact_pos，同一帧内释放 + 消失会导致按下有高亮、
+                            // 抬起却不触发 click（菜单栏/ribbon 点击失效的根因）。
+                            self.last_pointer = Some(pos);
                             self.touch_pointer = None;
                         }
                     }
@@ -206,20 +229,33 @@ impl State {
                                 modifiers: self.modifiers,
                             });
                         }
-                        events.push(Event::PointerGone);
+                        // 同触摸：释放后不发 PointerGone，否则同一帧内清空 interact_pos，
+                        // egui 的 click 判定失效（菜单栏/ribbon 点了没反应）。
+                        self.last_pointer = Some(pos);
                     }
                     3 => self.cancel(events),
                     _ => {}
                 }
             }
             "axis" => {
-                if input.zoom.is_finite() && input.zoom > 0.0 {
+                // 桥在轴事件里带了指针位置（物理像素）。egui 和上游导航都靠
+                // `pointer.hover_pos()` + `contains_pointer()` 判断"滚轮落在视口上"：
+                // 不发 PointerMoved 就没有 hover，整条滚轮会被静默丢弃。这是滚轮
+                // 缩放无效的真正原因（事件其实一直有到）。
+                if input.x != 0.0 || input.y != 0.0 {
+                    self.move_pointer(pos, events);
+                }
+                // 捏合比例 1.0（或 0）表示未缩放，别当成 zoom 事件把滚轮吞掉。
+                if input.zoom.is_finite() && input.zoom > 0.0 && (input.zoom - 1.0).abs() > 1e-4 {
                     events.push(Event::Zoom(input.zoom));
                 } else if input.dx != 0.0 || input.dy != 0.0 {
                     events.push(Event::MouseWheel {
                         unit: egui::MouseWheelUnit::Point,
                         phase: TouchPhase::Move,
-                        delta: egui::vec2(input.dx / scale, input.dy / scale),
+                        // 滚动量是滚轮档位而不是坐标，不能除以 scale。上游按
+                        // exp(-scroll * 0.0015) 缩放，标准一档约 50 点（≈7%），
+                        // 而 OHOS 一档在这里约报 6 个单位，故乘 8 换算成点。
+                        delta: egui::vec2(input.dx * WHEEL_POINTS_PER_UNIT, input.dy * WHEEL_POINTS_PER_UNIT),
                         modifiers: self.modifiers,
                     });
                 }

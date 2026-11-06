@@ -152,7 +152,11 @@ fn write_temp_file(dir: &str, name: &str, bytes: &[u8]) -> std::io::Result<Strin
         .chars()
         .map(|c| if c.is_alphanumeric() || c == '.' || c == '-' || c == '_' { c } else { '_' })
         .collect();
-    let path = std::path::Path::new(dir).join(format!("{stamp}_{safe}"));
+    // 唯一性放在目录名上，文件名保持干净：标签页标题取自 file_name，若把时间戳
+    // 拼进文件名，标题就会显示成 "1793969144166_车形-探长"。
+    let slot = std::path::Path::new(dir).join(stamp.to_string());
+    std::fs::create_dir_all(&slot)?;
+    let path = slot.join(&safe);
     std::fs::write(&path, bytes)?;
     Ok(path.to_string_lossy().into_owned())
 }

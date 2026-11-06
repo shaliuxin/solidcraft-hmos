@@ -183,13 +183,16 @@ struct Index {
       // 关键：fileIo.copyFileSync 原生支持 picker 返回的 file:// URI（含非 ASCII 名），
       // 直接完成 URI→沙箱复制；不要自己 open+writeSync 循环——writeSync 的 buffer 参数
       // 必须是 ArrayBuffer/string，传 Uint8Array 视图会触发 "Invalid arraybuffer or options"。
+      // 唯一性放在目录名上（时间戳子目录），文件名保持原样：Rust 侧用 file_name
+      // 做标签页标题，加时间戳前缀会让标签显示成 "1793969144166_车形-探长"。
       const inbox = this.context.filesDir + '/.inbox';
+      const slot = inbox + '/' + Date.now();
       try {
-        fileIo.mkdirSync(inbox, true);
+        fileIo.mkdirSync(slot, true);
       } catch (e) {
-        // 目录已存在。
+        // 目录已存在（同一毫秒内重复打开），复用即可。
       }
-      const dst = inbox + '/' + Date.now() + '_' + baseName;
+      const dst = slot + '/' + baseName;
       try {
         fileIo.copyFileSync(uriStr, dst);
       } catch (uriErr) {

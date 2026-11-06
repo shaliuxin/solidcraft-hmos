@@ -243,6 +243,23 @@ void Touch(OH_NativeXComponent* c, void* window) {
         Json("{\"kind\":\"blur\"}");
         return;
     }
+    // 抬起点的位置必须单独带出去：UP 的触点会被下面的循环过滤掉，points 里只剩仍未抬起的
+    // 手指。Rust 侧靠 "某个 id 从集合中消失" 判定抬起，拿不到坐标，egui 的 click 判定
+    // 就失去了 release 位置（表现为按下有高亮、抬起不触发 clicked）。这里先取出 e.id 的
+    // 最后坐标，作为 JSON 顶层的 x/y 传给 Rust。
+    float upX = 0.0f, upY = 0.0f;
+    int hasUp = 0;
+    for (uint32_t i = 0; i < e.numPoints && i < OH_NATIVE_XCOMPONENT_MAX_TOUCH_POINTS_NUMBER; ++i) {
+        const auto& point = e.touchPoints[i];
+        if (point.id != e.id) continue;
+        if (e.type != OH_NATIVEXCOMPONENT_UP && point.type != OH_NATIVEXCOMPONENT_UP) break;
+        if (std::isfinite(point.x) && std::isfinite(point.y)) {
+            upX = point.x;
+            upY = point.y;
+            hasUp = 1;
+        }
+        break;
+    }
     std::string points;
     for (uint32_t i = 0; i < e.numPoints && i < OH_NATIVE_XCOMPONENT_MAX_TOUCH_POINTS_NUMBER; ++i) {
         const auto& point = e.touchPoints[i];
@@ -255,7 +272,12 @@ void Touch(OH_NativeXComponent* c, void* window) {
         if (!points.empty()) points += ",";
         points += "{\"id\":" + std::to_string(static_cast<uint32_t>(point.id)) + ",\"x\":" + std::to_string(point.x) + ",\"y\":" + std::to_string(point.y) + "}";
     }
-    Json("{\"kind\":\"touch\",\"points\":[" + points + "]}");
+    std::string message = "{\"kind\":\"touch\",\"points\":[" + points + "]";
+    if (hasUp) {
+        message += ",\"up\":1,\"x\":" + std::to_string(upX) + ",\"y\":" + std::to_string(upY);
+    }
+    message += "}";
+    Json(message);
 }
 void Mouse(OH_NativeXComponent* c, void* window) {
     auto* state = Enter(c);
@@ -306,8 +328,10 @@ void Axis(OH_NativeXComponent* c, ArkUI_UIInputEvent* event, ArkUI_UIInputEvent_
     auto* state = Enter(c);
     if (!state) return;
     if (!event || type != ARKUI_UIINPUTEVENT_TYPE_AXIS) return;
-    double x = -OH_ArkUI_AxisEvent_GetHorizontalAxisValue(event);
-    double y = -OH_ArkUI_AxisEvent_GetVerticalAxisValue(event);
+    // 不取反：OHOS 的 vertical 正方向（手指/滚轮上推）与 egui 的 delta.y 正方向一致，
+    // 取反会让滚轮方向完全相反（向上滚反而缩小）。
+    double x = OH_ArkUI_AxisEvent_GetHorizontalAxisValue(event);
+    double y = OH_ArkUI_AxisEvent_GetVerticalAxisValue(event);
     double zoom = OH_ArkUI_AxisEvent_GetPinchAxisScaleValue(event);
     float px = OH_ArkUI_PointerEvent_GetX(event), py = OH_ArkUI_PointerEvent_GetY(event);
     if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(px) || !std::isfinite(py)) return;
