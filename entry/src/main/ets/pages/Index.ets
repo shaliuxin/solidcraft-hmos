@@ -62,6 +62,10 @@ struct Index {
   private generation: number = 0;
   private context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
   @State private deviceScale: number = 1;
+  // 热启动（应用已在前台）时，系统"用其它应用打开"走 Ability.onNewWant，它把 URI 写进
+  // AppStorage；这里用 @Watch 监听，一旦写入就立即在已加载的页面里消费。冷启动由
+  // initializeHost 在页面首帧读取 AppStorage，两者互补，覆盖冷/热两种打开方式。
+  @StorageLink('solidcraftOpenWant') @Watch('onOpenWantArrived') private pendingOpenUri: string = '';
 
   aboutToAppear(): void {
     console.info('SolidCraft native page appearing');
@@ -105,6 +109,14 @@ struct Index {
       }
     } catch (error) {
       if (this.alive && generation === this.generation) { this.failure = (error as Error).message; }
+    }
+  }
+
+  private onOpenWantArrived(): void {
+    const uri = this.pendingOpenUri;
+    if (uri && uri.length > 0 && this.alive) {
+      AppStorage.setOrCreate('solidcraftOpenWant', '');
+      this.openWant(uri);
     }
   }
 
