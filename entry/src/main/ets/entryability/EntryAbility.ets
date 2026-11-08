@@ -23,6 +23,11 @@ export default class EntryAbility extends UIAbility {
   }
 
   onCreate(want: Want, _launchParam: AbilityConstant.LaunchParam): void {
+    // 冷启动（系统"用其它应用打开"）时 want 携带待打开文件的 URI，先存起来，
+    // 等页面初始化后再消费；热启动的同一逻辑在 onNewWant 里。
+    if (want?.uri) {
+      AppStorage.setOrCreate('solidcraftOpenWant', want.uri);
+    }
     this.syncSystemTheme(this.context.config?.colorMode);
     console.info('SolidCraft native ability created');
   }

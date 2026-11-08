@@ -167,48 +167,61 @@ struct Index {
 
   private async pickDocument(id: number, _gallery: boolean): Promise<void> {
     const generation = this.generation;
+    // 指定本地用户目录为默认打开位置，让系统选择器直接落到"浏览"视图，
+    // 绕开首次进入"推荐"云盘视图时的"操作失败，请重新连接设备或检查网络"弹窗与空列表。
+    // 该 URI 是鸿蒙文件管理器的用户根目录；个别设备/权限下不被接受时，退回不带默认路径再选一次。
+    const options = new picker.DocumentSelectOptions();
+    options.maxSelectNumber = 1;
+    options.defaultFilePathUri = 'file://docs/storage/Users/currentUser';
+    let uris: Array<string>;
     try {
-      const uris = await new picker.DocumentViewPicker(this.context).select(new picker.DocumentSelectOptions());
-      if (!this.alive || generation !== this.generation || uris.length === 0) {
-        console.info(`SolidCraft pick open: cancelled (alive=${this.alive} gen ${generation}!=${this.generation} n=${uris.length})`);
-        native.reply(id, false, 'cancelled', new ArrayBuffer(0));
+      uris = await new picker.DocumentViewPicker(this.context).select(options);
+    } catch (error) {
+      console.warn(`SolidCraft pick open: default path failed (${(error as Error).message}); retrying without default`);
+      try {
+        uris = await new picker.DocumentViewPicker(this.context).select(new picker.DocumentSelectOptions());
+      } catch (err2) {
+        const e = err2 as Error;
+        console.error(`SolidCraft pick open FAILED: ${e.message}\n${e.stack ?? ''}`);
+        native.reply(id, false, String(e.message ?? err2), new ArrayBuffer(0));
         return;
       }
-      const uriStr = uris[0];
-      const info = new fileUri.FileUri(uriStr);
-      const baseName = info.name || uriStr.substring(uriStr.lastIndexOf('/') + 1) || 'document';
-      console.info(`SolidCraft pick open: uri=${uriStr} path=${info.path} name=${baseName}`);
-
-      // 把 picker 授权的文件复制进沙箱 .inbox，Rust 侧再用 std::fs 按路径读取。
-      // 关键：fileIo.copyFileSync 原生支持 picker 返回的 file:// URI（含非 ASCII 名），
-      // 直接完成 URI→沙箱复制；不要自己 open+writeSync 循环——writeSync 的 buffer 参数
-      // 必须是 ArrayBuffer/string，传 Uint8Array 视图会触发 "Invalid arraybuffer or options"。
-      // 唯一性放在目录名上（时间戳子目录），文件名保持原样：Rust 侧用 file_name
-      // 做标签页标题，加时间戳前缀会让标签显示成 "1793969144166_车形-探长"。
-      const inbox = this.context.filesDir + '/.inbox';
-      const slot = inbox + '/' + Date.now();
-      try {
-        fileIo.mkdirSync(slot, true);
-      } catch (e) {
-        // 目录已存在（同一毫秒内重复打开），复用即可。
-      }
-      const dst = slot + '/' + baseName;
-      try {
-        fileIo.copyFileSync(uriStr, dst);
-      } catch (uriErr) {
-        // 极少数情况下按 URI 复制失败，退回用解码后的真实路径复制。
-        console.warn(`SolidCraft pick open: copySync by URI failed (${(uriErr as Error).message}); trying decoded path`);
-        fileIo.copyFileSync(info.path, dst);
-      }
-      const size = fileIo.statSync(dst).size;
-      console.info(`SolidCraft pick open: copied ${size} bytes -> ${dst}`);
-      // 把沙箱路径回传给 Rust（open/file 读此路径，save 写此路径）。
-      native.reply(id, true, dst, new ArrayBuffer(0));
-    } catch (error) {
-      const err = error as Error;
-      console.error(`SolidCraft pick open FAILED: ${err.message}\n${err.stack ?? ''}`);
-      native.reply(id, false, String(err.message ?? error), new ArrayBuffer(0));
     }
+    if (!this.alive || generation !== this.generation || uris.length === 0) {
+      console.info(`SolidCraft pick open: cancelled (alive=${this.alive} gen ${generation}!=${this.generation} n=${uris?.length})`);
+      native.reply(id, false, 'cancelled', new ArrayBuffer(0));
+      return;
+    }
+    const uriStr = uris[0];
+    const info = new fileUri.FileUri(uriStr);
+    const baseName = info.name || uriStr.substring(uriStr.lastIndexOf('/') + 1) || 'document';
+    console.info(`SolidCraft pick open: uri=${uriStr} path=${info.path} name=${baseName}`);
+
+    // 把 picker 授权的文件复制进沙箱 .inbox，Rust 侧再用 std::fs 按路径读取。
+    // 关键：fileIo.copyFileSync 原生支持 picker 返回的 file:// URI（含非 ASCII 名），
+    // 直接完成 URI→沙箱复制；不要自己 open+writeSync 循环——writeSync 的 buffer 参数
+    // 必须是 ArrayBuffer/string，传 Uint8Array 视图会触发 "Invalid arraybuffer or options"。
+    // 唯一性放在目录名上（时间戳子目录），文件名保持原样：Rust 侧用 file_name
+    // 做标签页标题，加时间戳前缀会让标签显示成 "1793969144166_车形-探长"。
+    const inbox = this.context.filesDir + '/.inbox';
+    const slot = inbox + '/' + Date.now();
+    try {
+      fileIo.mkdirSync(slot, true);
+    } catch (e) {
+      // 目录已存在（同一毫秒内重复打开），复用即可。
+    }
+    const dst = slot + '/' + baseName;
+    try {
+      fileIo.copyFileSync(uriStr, dst);
+    } catch (uriErr) {
+      // 极少数情况下按 URI 复制失败，退回用解码后的真实路径复制。
+      console.warn(`SolidCraft pick open: copySync by URI failed (${(uriErr as Error).message}); trying decoded path`);
+      fileIo.copyFileSync(info.path, dst);
+    }
+    const size = fileIo.statSync(dst).size;
+    console.info(`SolidCraft pick open: copied ${size} bytes -> ${dst}`);
+    // 把沙箱路径回传给 Rust（open/file 读此路径，save 写此路径）。
+    native.reply(id, true, dst, new ArrayBuffer(0));
   }
 
   // v1 limitation: the chosen name is written into the app sandbox (filesDir). True OS-level
