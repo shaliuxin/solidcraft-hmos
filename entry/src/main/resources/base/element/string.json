@@ -1,5 +1,6 @@
 {
   "string": [
-    { "name": "module_description", "value": "SolidCraft For HarmonyOS 离线三维建模应用" }
+    { "name": "app_name", "value": "SolidCraft" },
+    { "name": "module_description", "value": "SolidCraft 离线三维建模应用" }
   ]
 }

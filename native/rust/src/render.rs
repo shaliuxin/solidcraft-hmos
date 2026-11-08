@@ -102,7 +102,7 @@ impl GpuRender {
         }))
         .map_err(|e| e.to_string())?;
         let (device, queue) = pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor {
-            label: Some("SolidCraft For HarmonyOS"),
+            label: Some("SolidCraft"),
             required_limits: adapter.limits(),
             ..Default::default()
         }))

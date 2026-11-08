@@ -277,7 +277,7 @@ struct Index {
       }
       if (this.failure.length > 0) {
         Column() {
-          Text('SolidCraft For HarmonyOS 原生运行错误').fontSize(20).fontColor('#FFFFFF')
+          Text('SolidCraft 原生运行错误').fontSize(20).fontColor('#FFFFFF')
           Text(this.failure).fontSize(14).fontColor('#FFFFFF').margin({ top: 12 })
           if (!this.initialized) {
             Button('重试').onClick((): void => { this.failure = ''; this.initializeHost(this.generation); })
