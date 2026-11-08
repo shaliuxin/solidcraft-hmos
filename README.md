@@ -1,4 +1,4 @@
-# SolidCraft for HarmonyOS（鸿蒙）
+# SolidCraft（鸿蒙）
 
 把 [SolidCraft](https://github.com/tangency-labs/solidcraft) —— 一个 Rust + egui 的 CAD / B-rep（边界表示）内核
 ——移植到 **HarmonyOS**，产出可在真机上安装的 DevEco Studio 工程与 `.hap`。

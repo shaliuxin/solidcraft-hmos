@@ -1,6 +1,6 @@
 # License
 
-SolidCraft for HarmonyOS（`io.github.shaliuxin.solidcraft.hmos`）是
+SolidCraft（`io.github.shaliuxin.solidcraft.hmos`）是
 [tangency-labs/solidcraft](https://github.com/tangency-labs/solidcraft) 的 HarmonyOS 移植。
 
 ## 许可
@@ -16,4 +16,4 @@ SolidCraft for HarmonyOS（`io.github.shaliuxin.solidcraft.hmos`）是
   其自身版权（tangency-labs）与许可不变；本移植**不改动上游文件**。
 - 本仓库原创部分（`native/rust` 适配层、`entry` C++ 桥 / ArkTS、`scripts/`、`docs/`、`移植报告.md`）
   一并采用上述 `MIT OR Apache-2.0`。
-- `LICENSE-MIT` 的版权主体暂记为 `SolidCraft for HarmonyOS contributors`，可替换为实际主体。
+- `LICENSE-MIT` 的版权主体暂记为 `SolidCraft contributors`，可替换为实际主体。
