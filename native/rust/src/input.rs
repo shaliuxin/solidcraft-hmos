@@ -257,6 +257,7 @@ impl State {
                         // 而 OHOS 一档在这里约报 6 个单位，故乘 8 换算成点。
                         delta: egui::vec2(input.dx * WHEEL_POINTS_PER_UNIT, input.dy * WHEEL_POINTS_PER_UNIT),
                         modifiers: self.modifiers,
+                        source: egui::MouseWheelSource::Unknown,
                     });
                 }
             }
@@ -265,6 +266,7 @@ impl State {
                 phase: TouchPhase::Move,
                 delta: egui::vec2(input.x, input.y),
                 modifiers: self.modifiers,
+                source: egui::MouseWheelSource::Unknown,
             }),
             "key" => {
                 let pressed = input.action == 0;

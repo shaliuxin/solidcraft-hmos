@@ -18,7 +18,9 @@ fi
 [ -n "$DEVICE" ] || { echo "no device connected"; exit 1; }
 echo "device=$DEVICE target=$TARGET bundle=$BUNDLE"
 
-export CARGO_NET_OFFLINE=true
+# 注：0.40 起 SMLib 改为纯 Rust 的 solidcore（tangency-labs/solidcore，git 依赖，由 solidcraft-smlib 引入），
+# 首次构建需要联网拉取该 git 依赖与 egui 0.37 / egui-wgpu 0.37 等新版 crate，故不再强制离线。
+# 若已缓存可手动设 CARGO_NET_OFFLINE=true。
 export DEVECO_SDK_HOME="$DEVECO/sdk"
 export NODE_HOME="$DEVECO/tools/node"
 export JAVA_HOME="$DEVECO/jbr"
@@ -30,18 +32,9 @@ export CC_aarch64_unknown_linux_ohos="$SDKLLVM/clang.exe"
 export AR_aarch64_unknown_linux_ohos="$SDKLLVM/llvm-ar.exe"
 export CC_x86_64_unknown_linux_ohos="$SDKLLVM/clang.exe"
 export AR_x86_64_unknown_linux_ohos="$SDKLLVM/llvm-ar.exe"
-# SMLib（NVIDIA B-Rep C++ 内核）交叉编译：cc crate 编 SMLib C++ 时用 CXX。
-# 鸿蒙 clang++ 的真身是 clang++.exe，包装脚本 aarch64-unknown-linux-ohos-clang++ 只是给它加上
-#  -target aarch64-linux-ohos --sysroot=<native>/sysroot -D__MUSL__；这些标志放进 CXXFLAGS。
-# sysroot 路径含空格（Program Files），cc 会按空格拆 --sysroot=… 参数。
-# 用无空格 junction C:\ohossysroot → <native>/sysroot（PowerShell 建的 mklink /J）。
-# 关键：clang++.exe 是原生 Windows 可执行文件，不认 MSYS 的 /c/... 路径，
-# 必须用原生 Windows 反斜杠路径 C:\ohossysroot（已验证 --sysroot='C:\ohossysroot' 能编出含 <features.h> 的 .o）。
-OHOS_SYSROOT="${OHOS_SYSROOT:-C:\\ohossysroot}"
-export CXX_aarch64_unknown_linux_ohos="$SDKLLVM/clang++.exe"
-export CXX_x86_64_unknown_linux_ohos="$SDKLLVM/clang++.exe"
-export CXXFLAGS_aarch64_unknown_linux_ohos="-target aarch64-linux-ohos --sysroot=$OHOS_SYSROOT -D__MUSL__"
-export CXXFLAGS_x86_64_unknown_linux_ohos="-target x86_64-linux-ohos --sysroot=$OHOS_SYSROOT -D__MUSL__"
+# 0.40 起 SMLib 内核为纯 Rust 的 solidcore（git 依赖），不再需要 C++ 交叉编译，
+# 故移除原 CXX_aarch64/x86_64 与 CXXFLAGS（含 C:\ohossysroot）那一套。
+# 若今后某个 crate 又引入 C 依赖，可在此恢复 CC/AR（上方已设），按需再补 CXX。
 cargo build --release --target "$TARGET" 2>&1 | tail -8
 [ "${PIPESTATUS[0]}" -eq 0 ] || { echo "cargo build failed"; exit 1; }
 

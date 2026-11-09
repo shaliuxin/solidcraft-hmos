@@ -181,10 +181,6 @@ impl GpuRender {
             msaa_samples: 1,
             msaa_supported: vec![1],
             renderer: self.renderer.clone(),
-            surface_config: egui_wgpu::SurfaceConfig {
-                present_mode: self.config.present_mode,
-                desired_maximum_frame_latency: Some(self.config.desired_maximum_frame_latency),
-            },
             device_lost: egui_wgpu::DeviceLost::default(),
         }
     }

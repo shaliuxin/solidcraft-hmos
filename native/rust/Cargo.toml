@@ -1,6 +1,6 @@
 [package]
 name = "solidcraft-hmos"
-version = "0.30.1"
+version = "0.40.0-rc.3"
 edition = "2021"
 license = "Apache-2.0"
 publish = false
@@ -11,11 +11,13 @@ crate-type = ["staticlib"]
 
 [dependencies]
 solidcraft-ui-egui = { path = "../../../solidcraft/crates/ui-egui" }
-# smlib：把 NVIDIA SMLib B-Rep 内核静态链入引擎，STEP/IGES 导入才可用（否则 "this build has no SMLib"）。
-# 需要 C++ 交叉编译：build.rs 用 cc 把 SMLib C++ 源码编到 aarch64-unknown-linux-ohos（见 run_on_device.sh 里的 CXX）。
-solidcraft-engine = { path = "../../../solidcraft/crates/engine", features = ["smlib"] }
-egui = "0.36"
-egui-wgpu = "0.36"
+# 0.40 起 system_language() 从 ui-egui::i18n 迁到 ui-text crate（locale.rs 用于选 CJK 字体）。
+solidcraft-ui-text = { path = "../../../solidcraft/crates/ui-text" }
+# SMLib 自 0.40 起改为纯 Rust 的 solidcore（tangency-labs/solidcore，git 依赖，由 solidcraft-smlib 引入），
+# 已默认编入引擎（kernel -> smlib），不再需要独立 feature，也不再需要 C++ 交叉编译。
+solidcraft-engine = { path = "../../../solidcraft/crates/engine" }
+egui = "0.37"
+egui-wgpu = "0.37"
 # GLES/EGL 后端是鸿蒙 NDK 能直接用的那套；丢 gles 鸿蒙就没渲染后端（与 photocraft 同源教训）。
 wgpu = { version = "30", default-features = false, features = ["std", "wgsl", "gles"] }
 pollster = "0.4"

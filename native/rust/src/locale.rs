@@ -49,7 +49,7 @@ pub fn install(files_dir: &str, locale: &str, language: &str) {
         }
         std::env::set_var("LANG", tag);
     }
-    let ui_language = solidcraft_ui_egui::i18n::system_language();
+    let ui_language = solidcraft_ui_text::system_language();
     let dir = Path::new(files_dir).join("system-fonts");
     let cjk = cjk_face(ui_language);
     match stage_fonts(&dir, cjk) {

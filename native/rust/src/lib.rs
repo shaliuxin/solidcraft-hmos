@@ -470,13 +470,13 @@ fn worker(config: Config, rx: mpsc::Receiver<Message>) {
                     }
                     Message::Open(name, data) => {
                         if let Ok(path) = write_temp_file(&config.files, &name, &data) {
-                            app.open_path(&path);
+                            app.open_path_with(&path, &serde_json::Map::new());
                         }
                         deadline = Some(Instant::now());
                     }
                     Message::Drop(name, data, _x, _y) => {
                         if let Ok(path) = write_temp_file(&config.files, &name, &data) {
-                            app.open_path(&path);
+                            app.open_path_with(&path, &serde_json::Map::new());
                         }
                         deadline = Some(Instant::now());
                     }
@@ -484,7 +484,7 @@ fn worker(config: Config, rx: mpsc::Receiver<Message>) {
                         match file_open::read(file) {
                             Ok(data) => {
                                 if let Ok(path) = write_temp_file(&config.files, &name, &data) {
-                                    app.open_path(&path);
+                                    app.open_path_with(&path, &serde_json::Map::new());
                                 }
                             }
                             Err(e) => bridge::notify(0, "error", &e, &[]),
