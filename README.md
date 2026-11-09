@@ -287,3 +287,20 @@ python3 scripts/verify_native.py entry/build/default/outputs/default/entry-defau
 
 - 上游项目 [SolidCraft](https://github.com/tangency-labs/solidcraft) 及其 `egui` / `wgpu` 生态。
 - 姊妹工程 `photocraft-hmos`：其"三层架构 + 双 ABI + 文件契约"经验被直接复用。
+
+---
+
+## 中文输入法（IME，2026-11-09 真机通过）
+
+HarmonyOS 官方「自定义编辑框」方案，与 DeckCraft / WordCraft / GridCraft / CadCraft 同一修法：
+
+1. 1×1 透明锚点 `Text('').id('solidcraft-ime-anchor').focusable(true)` → `requestFocus`；
+2. `await inputMethod.getController().attach(true, textConfig)`；
+3. **attach 成功之后**才注册 `insertText/setPreviewText/finishTextPreview/deleteLeft/sendFunctionKey`
+   （提前注册抛 `12800009 detached`，键盘完全不弹）。
+
+导入必须写 `import { inputMethod } from '@kit.IMEKit';`（命名导入），XComponent 已去掉
+`.focusOnTouch(true)`。真机日志：`SolidCraft native ime: show` → `IME attached` → `listeners bound`。
+
+> PC 多窗口 + 外接物理键盘时系统不自动展开面板（系统「备忘录」同样只有悬浮工具栏），
+> 需点右下悬浮栏 ⌨ —— 系统策略，非应用缺陷。

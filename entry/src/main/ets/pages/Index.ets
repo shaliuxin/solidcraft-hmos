@@ -4,6 +4,7 @@ import { fileIo, fileUri, picker } from '@kit.CoreFileKit';
 import { i18n } from '@kit.LocalizationKit';
 import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
 import { display } from '@kit.ArkUI';
+import { inputMethod } from '@kit.IMEKit';
 import { SYSTEM_THEME_DARK, SYSTEM_THEME_LIGHT } from '../SystemTheme';
 
 // Mirrors the Rust `Config` deserialized in native/rust/src/lib.rs.
@@ -62,6 +63,15 @@ struct Index {
   private generation: number = 0;
   private context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
   @State private deviceScale: number = 1;
+  // 中文输入法（官方「自定义编辑框」方案，与 DeckCraft/WordCraft/GridCraft 同一修法）：
+  // attach 前必须先有一个获焦的 ArkUI 编辑组件（XComponent 原生表面不算），
+  // 且监听器必须在 attach 成功之后注册（提前注册抛 12800009，键盘完全不弹）。
+  private imeController: inputMethod.InputMethodController | undefined = undefined;
+  private imeAttached: boolean = false;
+  private imeShown: boolean = false;
+  private imeInComposition: boolean = false;
+  private imeBound: boolean = false;
+  private imeWanted: boolean = false;
   // 热启动（应用已在前台）时，系统"用其它应用打开"走 Ability.onNewWant，它把 URI 写进
   // AppStorage；这里用 @Watch 监听，一旦写入就立即在已加载的页面里消费。冷启动由
   // initializeHost 在页面首帧读取 AppStorage，两者互补，覆盖冷/热两种打开方式。
@@ -174,7 +184,128 @@ struct Index {
       this.pickDocument(id, false);
     } else if (request.kind === 'save') {
       this.pickSave(id, request.text);
+    } else if (request.kind === 'ime') {
+      // Rust 通知：egui 文本字段获得/失去焦点 → 弹起/收起软键盘。
+      this.setImeKeyboard(request.text === 'show');
     }
+  }
+
+  // ===================== 中文输入法（IME） =====================
+  // 鸿蒙软键盘中文输入法走 InputMethod 框架，不经 XComponent 原始按键事件。
+  // 顺序（真机实测，不可颠倒）：锚点获焦 → attach(true) → **attach 成功后**注册监听。
+
+  private imeControllerOrGet(): inputMethod.InputMethodController | undefined {
+    if (this.imeController) {
+      return this.imeController;
+    }
+    try {
+      const controller: inputMethod.InputMethodController = inputMethod.getController();
+      this.imeController = controller;
+      return controller;
+    } catch (error) {
+      console.error(`SolidCraft IME controller failed: ${(error as Error).message}`);
+      return undefined;
+    }
+  }
+
+  private bindImeListeners(controller: inputMethod.InputMethodController): void {
+    if (this.imeBound) {
+      return;
+    }
+    try {
+      // insertText = 已确认上屏文本；setPreviewText = 拼音组合态；finishTextPreview = 组合结束；
+      // deleteLeft = 退格（组合态内由键盘自行处理）；sendFunctionKey = 回车；sendKeyboardStatus = 显隐。
+      controller.on('insertText', (text: string): void => { this.sendIme('commit', text); });
+      controller.on('setPreviewText', (text: string, _range: inputMethod.Range): void => {
+        this.imeInComposition = (text.length > 0);
+        this.sendIme('preedit', text);
+      });
+      controller.on('finishTextPreview', (): void => { this.imeInComposition = false; this.sendIme('preedit', ''); });
+      controller.on('deleteLeft', (length: number): void => {
+        if (!this.imeInComposition) { this.sendIme('delete', String(length)); }
+      });
+      controller.on('sendFunctionKey', (_key: inputMethod.FunctionKey): void => { this.sendIme('enter', ''); });
+      controller.on('sendKeyboardStatus', (status: inputMethod.KeyboardStatus): void => {
+        this.imeShown = (status === inputMethod.KeyboardStatus.SHOW);
+      });
+      this.imeBound = true;
+      console.info('SolidCraft IME listeners bound');
+    } catch (error) {
+      console.warn(`SolidCraft IME bind failed: ${(error as Error).message}`);
+    }
+  }
+
+  private async setImeKeyboard(show: boolean): Promise<void> {
+    if (!this.alive) {
+      return;
+    }
+    this.imeWanted = show;
+    const controller = this.imeControllerOrGet();
+    if (!controller) {
+      return;
+    }
+    if (show) {
+      try {
+        this.getUIContext().getFocusController().requestFocus('solidcraft-ime-anchor');
+      } catch (error) {
+        console.warn(`SolidCraft IME anchor focus failed: ${(error as Error).message}`);
+      }
+      try {
+        await controller.attach(true, this.imeTextConfig());
+        this.imeAttached = true;
+        this.imeShown = true;
+        console.info('SolidCraft IME attached');
+      } catch (error) {
+        console.warn(`SolidCraft IME attach failed: ${(error as Error).message}`);
+        try {
+          await controller.showTextInput(inputMethod.RequestKeyboardReason.OTHER);
+          this.imeAttached = true;
+          this.imeShown = true;
+        } catch (e2) {
+          console.warn(`SolidCraft IME show failed: ${(e2 as Error).message}`);
+        }
+      }
+      if (this.imeAttached) {
+        this.bindImeListeners(controller);
+        try {
+          // PC 模式/外接键盘下 attach(true) 可能只出现悬浮工具栏，TOUCH 理由尝试强制展开面板。
+          await controller.showTextInput(inputMethod.RequestKeyboardReason.TOUCH);
+        } catch (error) {
+          console.warn(`SolidCraft IME touch-show failed: ${(error as Error).message}`);
+        }
+      }
+    } else {
+      this.imeInComposition = false;
+      try {
+        if (this.imeAttached) { await controller.hideTextInput(); }
+      } catch (error) {
+        console.warn(`SolidCraft IME hide failed: ${(error as Error).message}`);
+      }
+      try {
+        if (this.imeAttached) { await controller.detach(); }
+      } catch (error) {
+        // 未绑定 / 重复 detach：忽略。
+      }
+      this.imeAttached = false;
+      this.imeShown = false;
+    }
+  }
+
+  private imeTextConfig(): inputMethod.TextConfig {
+    return {
+      inputAttribute: {
+        textInputType: inputMethod.TextInputType.TEXT,
+        enterKeyType: inputMethod.EnterKeyType.NEWLINE,
+        consumeKeyEvents: true,
+      },
+    };
+  }
+
+  private sendIme(op: string, text: string): void {
+    if (!this.alive) {
+      return;
+    }
+    native.input(JSON.stringify({ kind: 'ime', op, text }));
   }
 
   private async pickDocument(id: number, _gallery: boolean): Promise<void> {
@@ -282,8 +413,25 @@ struct Index {
           .onLoad((): void => {
             try { this.getUIContext().getFocusController().requestFocus('solidcraft-editor'); } catch (e) {}
           })
-          .id('solidcraft-editor').focusable(true).defaultFocus(true).focusOnTouch(true)
+          // 不设 focusOnTouch：打字期间点击画布若把焦点抢回 XComponent（非编辑代理），
+          // 会断开输入法绑定导致键盘收起；触摸/指针事件不经 ArkUI 焦点，不受影响。
+          .id('solidcraft-editor').focusable(true).defaultFocus(true)
       }
+      // 隐藏的 IME 锚点：输入法框架只认「获得焦点的编辑组件」为可输入位置，
+      // attach 前必须先聚焦它（官方自定义编辑框方案）。
+      Text('')
+        .id('solidcraft-ime-anchor')
+        .focusable(true)
+        .width(1).height(1)
+        .opacity(0)
+        .hitTestBehavior(HitTestMode.None)
+        .onBlur((): void => {
+          if (this.imeAttached) {
+            this.imeAttached = false;
+            this.imeShown = false;
+            console.info('SolidCraft IME anchor blurred, binding reset');
+          }
+        })
       if (this.startupVisible) {
         Column() {
           Column({ space: 18 }) {
