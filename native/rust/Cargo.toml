@@ -1,6 +1,6 @@
 [package]
 name = "solidcraft-hmos"
-version = "0.40.0-rc.3"
+version = "0.41.0"
 edition = "2021"
 license = "Apache-2.0"
 publish = false
@@ -13,8 +13,9 @@ crate-type = ["staticlib"]
 solidcraft-ui-egui = { path = "../../../solidcraft/crates/ui-egui" }
 # 0.40 起 system_language() 从 ui-egui::i18n 迁到 ui-text crate（locale.rs 用于选 CJK 字体）。
 solidcraft-ui-text = { path = "../../../solidcraft/crates/ui-text" }
-# SMLib 自 0.40 起改为纯 Rust 的 solidcore（tangency-labs/solidcore，git 依赖，由 solidcraft-smlib 引入），
-# 已默认编入引擎（kernel -> smlib），不再需要独立 feature，也不再需要 C++ 交叉编译。
+# SMLib 自 0.40 起改为纯 Rust 的 solidcore（vendored 本地 path 依赖 solidcore/crates/solidcore，
+# 由 solidcraft-smlib 引入，全仓无 git 依赖），已默认编入引擎（kernel -> smlib），
+# 不再需要独立 feature，也不再需要 C++ 交叉编译。
 solidcraft-engine = { path = "../../../solidcraft/crates/engine" }
 egui = "0.37"
 egui-wgpu = "0.37"

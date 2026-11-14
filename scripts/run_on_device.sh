@@ -18,9 +18,9 @@ fi
 [ -n "$DEVICE" ] || { echo "no device connected"; exit 1; }
 echo "device=$DEVICE target=$TARGET bundle=$BUNDLE"
 
-# 注：0.40 起 SMLib 改为纯 Rust 的 solidcore（tangency-labs/solidcore，git 依赖，由 solidcraft-smlib 引入），
-# 首次构建需要联网拉取该 git 依赖与 egui 0.37 / egui-wgpu 0.37 等新版 crate，故不再强制离线。
-# 若已缓存可手动设 CARGO_NET_OFFLINE=true。
+# 注：0.40 起 SMLib 改为纯 Rust 的 solidcore，已 vendored 为本地 path 依赖（solidcore/crates/solidcore），
+# 全仓无 git 依赖。首次构建仍需联网从 crates.io 拉取 egui 0.37 / egui-wgpu 0.37 等 crate，故不强制离线。
+# 若依赖已缓存可手动设 CARGO_NET_OFFLINE=true。
 export DEVECO_SDK_HOME="$DEVECO/sdk"
 export NODE_HOME="$DEVECO/tools/node"
 export JAVA_HOME="$DEVECO/jbr"
@@ -32,7 +32,7 @@ export CC_aarch64_unknown_linux_ohos="$SDKLLVM/clang.exe"
 export AR_aarch64_unknown_linux_ohos="$SDKLLVM/llvm-ar.exe"
 export CC_x86_64_unknown_linux_ohos="$SDKLLVM/clang.exe"
 export AR_x86_64_unknown_linux_ohos="$SDKLLVM/llvm-ar.exe"
-# 0.40 起 SMLib 内核为纯 Rust 的 solidcore（git 依赖），不再需要 C++ 交叉编译，
+# 0.40 起 SMLib 内核为纯 Rust 的 solidcore（vendored path 依赖），不再需要 C++ 交叉编译，
 # 故移除原 CXX_aarch64/x86_64 与 CXXFLAGS（含 C:\ohossysroot）那一套。
 # 若今后某个 crate 又引入 C 依赖，可在此恢复 CC/AR（上方已设），按需再补 CXX。
 cargo build --release --target "$TARGET" 2>&1 | tail -8
