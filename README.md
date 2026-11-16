@@ -3,7 +3,7 @@
 把 [SolidCraft](https://github.com/tangency-labs/solidcraft) —— 一个 Rust + egui 的 CAD / B-rep（边界表示）内核
 ——移植到 **HarmonyOS**，产出可在真机上安装的 DevEco Studio 工程与 `.hap`。
 
-- **移植对象**：`tangency-labs/solidcraft`（`0.30.1`）
+- **移植对象**：`tangency-labs/solidcraft`（`0.43.0`）
 - **移植方法**：参照姊妹工程 `photocraft-hmos` 的成熟经验（三层架构 + 双 ABI 产物 + 离线签名），
   但**不 patch 上游** —— SolidCraft 的 `SolveApp` 已原生暴露全部宿主缝。
 - **当前状态**：已在 **HUAWEI MateBook Fold / 2in1 / API 26 / Maleoon 916** 真机上**安装运行通过**；
@@ -46,7 +46,7 @@
 | 真机安装运行 | ✅ 已验证 | HUAWEI MateBook Fold / 2in1 / API 26 / Maleoon 916：安装启动成功，完整界面（ribbon 工具栏 / Browser / 3D 视口 / History 时间轴 / Start 页与示例缩略图）渲染 |
 | 空闲自动休眠 | ✅ 已验证 | 按 `repaint_delay` 排帧，静止后帧循环真正停下（不再 58fps 空转），点击立即恢复 |
 | 输入（触摸 / 鼠标 / 键盘） | ✅ 基本验证 | 单击命中准确、长按弹上下文菜单、键盘 keycode 映射正确（`2070=Escape`、`2071=ForwardDel`） |
-| `.step` 模型加载 | ✅ 已验证 | SMLib（NVIDIA B-rep C++ 内核）经 DevEco `clang++` 交叉编译到 aarch64-ohos 并静态链入 `libsolidcraft.so`；"人形战戟.step" 打开成功 |
+| `.step` 模型加载 | ✅ 已验证 | 0.40 起 B-rep 内核改为纯 Rust 的 `solidcore`（vendored `path` 依赖，无需 C++ 交叉编译）；"人形战戟.step" 打开成功 |
 | 界面语言跟随系统 | ✅ 已验证 | 系统 `zh-Hans-CN` → 界面自动中文，设置里显示「系统」；CJK 字体由 `/system/fonts` 注入 |
 | 首选项持久化 | ⚠️ 首版省略 | 宿主未实现 eframe storage 等价物，设置（语言 / 主题）内存态、重启不保留 |
 | 手写笔（stylus） | ⚠️ 首版省略 | 已用触摸 + 鼠标近似，未接压感 / 倾斜 |
@@ -247,17 +247,17 @@ python3 scripts/verify_native.py entry/build/default/outputs/default/entry-defau
   # x86_64 同理，triple 为 x86_64-linux-ohos
   ```
 
-- **SMLib 交叉编译**：`scripts/run_on_device.sh` 已内置 `CXXFLAGS` 把 `--sysroot` 指向无空格 junction
-  `C:\ohossysroot`（`clang++.exe` 是原生 Windows 可执行文件，不认 MSYS 的 `/c/...` 路径，须用原生反斜杠路径），
-  编出的 SMLib 符号静态链入 `libsolidcraft.so`，并同目录捆绑 `libc++_shared.so`。
+- **B-rep 内核**：0.40 起上游把 SMLib 换成纯 Rust 的 `solidcore`（vendored `path` 依赖
+  `solidcore/crates/solidcore`），全仓无 git 依赖、不再需要 `clang++` / `CXXFLAGS` / `C:\ohossysroot`
+  那套 C++ 交叉编译；`scripts/run_on_device.sh` 只保留 `CC_*` / `AR_*` 给偶发的 C 依赖兜底。
 
 ---
 
 ## 许可与上游
 
-- **上游**：[tangency-labs/solidcraft](https://github.com/tangency-labs/solidcraft)（`0.30.1`）。
+- **上游**：[tangency-labs/solidcraft](https://github.com/tangency-labs/solidcraft)（`0.43.0`）。
   本工程通过 `path` 依赖复用上游 crate，**上游文件零改动**；所有鸿蒙逻辑都在独立适配层 workspace 内。
-- **版本号**：`versionName: "0.30.1"` / `versionCode: 30001`，对齐上游，与其它工程（photocraft 的 `0.1.0.1 / 10001`）不重叠。
+- **版本号**：`versionName: "0.43.0"`（跟随上游 tag）/ `versionCode: 43000`（本项目 4xxxx 递增体系，逐版大于前一版以避免 `hdc install` 报 9568263 版本降级）。显示名统一为 `SolidCraft`，不加平台后缀。
 - **上游许可**：[SolidCraft](https://github.com/tangency-labs/solidcraft) 为 `MIT OR Apache-2.0`，
   本工程通过 `path` 依赖复用其 crate，遵循同一许可。
 - **本仓库原创部分**（`native/rust` 适配层、`entry` C++ 桥 / ArkTS、`scripts/`、`docs/`、`移植报告.md`）：

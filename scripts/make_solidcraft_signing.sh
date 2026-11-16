@@ -90,7 +90,7 @@ APP_B64=$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' app-cert.cer | tr -d
 cat > app-profile.json <<EOF
 {
   "version-name": "2.0.0",
-  "version-code": 42000,
+  "version-code": 43000,
   "uuid": "6c1a0e2b-4f3d-4b7a-9c2e-solidcraft01",
   "validity": { "not-before": $NB, "not-after": $NA },
   "type": "debug",

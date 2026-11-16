@@ -32,3 +32,6 @@ signing/
 *.log
 *.b64
 cur_pid.txt
+
+# On-device STEP import smoke-test scratch (never commit)
+sc_test.step

@@ -1,20 +1,21 @@
 {
+  // ── 占位符版本（公开仓库用）──────────────────────────────────────────────
+  // 真实的签名材料路径 / 口令 hex 属于本机私有信息，不入库：
+  //   本机真实配置另存为 signing/build-profile.local.json5（signing/ 已被 .gitignore 屏蔽）。
+  //   scripts/run_on_device.sh 在打包前会自动把它还原成本文件，本地构建无需手动操作。
+  //
+  // 首次使用请任选其一生成自己的签名配置：
+  //   A) DevEco Studio → File → Project Structure → Signing Configs → 勾选自动签名，
+  //      用 bundleName io.github.shaliuxin.solidcraft.hmos 生成绑定本机设备 UDID 的调试 Profile，
+  //      DevEco 会自动回写 material 四件套到本文件（回写后请本地备份，勿提交）。
+  //   B) 纯命令行自测：bash scripts/make_solidcraft_signing.sh 生成 signing/ 下本地 CA 链
+  //      （issuer=pki_internal，仅能验证打包链路；真机安装会报 9568257）。
+  //
+  // 包名铁律：bundleName 绑定 profile 与设备 UDID，上架后永久不可改；
+  // 切勿借用其它 craft 工程的 profile（会与该包名旧版撞车，报 9568263 版本降级）。
+  // ────────────────────────────────────────────────────────────────────────
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001A354F9A59EA33A849B09C0A6236DD17B905F334CC605D44BAD3AE04265CCF4A6F83EE54EB9EF8",
-          "profile": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\mingh\\.ohos\\config\\default_solidcraft-hmos_XyErq1w7sKT0LYwvYfSdeUKlM0WK3s_GduI7TEPqlSg=.p12",
-          "storePassword": "0000001A8D2E67524531C4386DEDAF7F06DE38CC8B3877346024BEB2A325E8A060C9BDC4EDF6C6F5D2A2"
-        }
-      }
-    ],
+    "signingConfigs": [],
     "products": [
       {
         "name": "default",

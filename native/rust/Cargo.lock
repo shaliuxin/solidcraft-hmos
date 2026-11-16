@@ -817,7 +817,7 @@ dependencies = [
 
 [[package]]
 name = "craft-plugin"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "schemars",
  "serde",
@@ -827,7 +827,7 @@ dependencies = [
 
 [[package]]
 name = "craft-plugin-wasm"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "cap-std",
  "craft-plugin",
@@ -3817,11 +3817,11 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-color"
-version = "0.42.0"
+version = "0.43.0"
 
 [[package]]
 name = "solidcraft-control"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
@@ -3830,7 +3830,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-control-egui"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
  "image",
@@ -3840,7 +3840,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-derive"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3849,11 +3849,11 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-display-units"
-version = "0.42.0"
+version = "0.43.0"
 
 [[package]]
 name = "solidcraft-doc"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "serde",
@@ -3878,7 +3878,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-engine"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "craft-plugin",
  "craft-plugin-wasm",
@@ -3908,7 +3908,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-format"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "serde_json",
  "sha2 0.10.9",
@@ -3917,7 +3917,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-geom"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "serde",
  "solidcore",
@@ -3929,7 +3929,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-gpu"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "pollster",
@@ -3948,7 +3948,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-hmos"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
  "egui-wgpu",
@@ -3966,7 +3966,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-io"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "cadmpeg-core",
  "cadmpeg-ir",
@@ -3986,6 +3986,7 @@ dependencies = [
  "serde_bytes",
  "serde_json",
  "sha2 0.10.9",
+ "solidcore-ops",
  "solidcore-record",
  "solidcore-tess",
  "solidcraft-color",
@@ -4001,7 +4002,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-kernel"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "rayon",
@@ -4021,7 +4022,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-look"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
  "log",
@@ -4032,7 +4033,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-profile"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "serde_json",
  "web-time",
@@ -4040,7 +4041,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-render"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "image",
  "moxcms",
@@ -4061,7 +4062,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-sketch"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "harfrust",
  "serde",
@@ -4074,7 +4075,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-smlib"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "serde_json",
@@ -4087,14 +4088,14 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-space-mouse"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "solidcraft-theme"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
  "serde",
@@ -4104,7 +4105,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-egui"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "arboard",
  "egui",
@@ -4143,7 +4144,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-kit"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "arboard",
  "egui",
@@ -4164,14 +4165,14 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-registry"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
 ]
 
 [[package]]
 name = "solidcraft-ui-text"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "serde_json",
@@ -4181,7 +4182,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "image",
  "serde",
@@ -4192,7 +4193,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport-egui"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "egui",
  "egui-wgpu",
@@ -4203,7 +4204,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport-gpu"
-version = "0.42.0"
+version = "0.43.0"
 dependencies = [
  "log",
  "pollster",

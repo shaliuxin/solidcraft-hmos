@@ -40,6 +40,12 @@ cargo build --release --target "$TARGET" 2>&1 | tail -8
 
 echo "--- [2/4] assembleHap ---"
 cd "$ROOT" || exit 1
+# 仓库里的 build-profile.json5 是占位符（不含本机签名路径 / 口令 hex）；
+# 若存在本地真实配置 signing/build-profile.local.json5（已 gitignore），打包前自动还原。
+if [ -f "$ROOT/signing/build-profile.local.json5" ]; then
+  cp -f "$ROOT/signing/build-profile.local.json5" "$ROOT/build-profile.json5"
+  echo "restored local signing config from signing/build-profile.local.json5"
+fi
 node "$DEVECO/tools/hvigor/bin/hvigorw.js" assembleHap --mode module \
   -p product=default -p buildMode=debug --no-daemon 2>&1 | tail -8
 [ "${PIPESTATUS[0]}" -eq 0 ] || { echo "assembleHap failed"; exit 1; }
