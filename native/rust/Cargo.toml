@@ -1,6 +1,6 @@
 [package]
 name = "solidcraft-hmos"
-version = "0.44.1"
+version = "0.45.0"
 edition = "2021"
 license = "Apache-2.0"
 publish = false
@@ -29,9 +29,23 @@ raw-window-handle = "0.6"
 libc = "0.2"
 
 # 上游用 vendored egui-wgpu；[patch] 只对 workspace 根生效，本适配层是另一个 workspace，必须抄过来。
+# 0.45.0 起 egui 整个仓库 git subtree vendored 到 vendor/egui，egui-wgpu 在其 crates/ 子目录。
+# 0.45.0 的 vendor/egui/crates/egui-wgpu 把 epaint/emath/ecolor 等声明为 `{ workspace = true }`，
+# 但 vendor/egui 的 workspace.dependencies 对「本适配层 workspace」不生效：cargo 会把这些
+# 回退到 crates.io 版本，导致 `egui::PaintCallbackInfo`（来自 crates.io epaint）与
+# `CallbackTrait::paint` 期望的 `epaint::PaintCallbackInfo`（来自 vendor/egui/crates/epaint）
+# 类型身份分裂，编译报 E0053。故必须把 egui 全家桶也 patch 到 vendor/egui/crates/*，
+# 保证整个 egui 生态用同一份 vendored 代码（与上游 0.45.0 workspace 的 patch 对齐）。
 # wgpu-hal 用 photocraft 验证过的、带 GLES uniform-block 修补的同一版本，目录不存在即报错（不悄悄用旧的）。
 [patch.crates-io]
-egui-wgpu = { path = "../../../solidcraft/vendor/egui-wgpu" }
-wgpu-hal = { path = "../../third_party/wgpu-hal-30.0.1" }
+egui          = { path = "../../../solidcraft/vendor/egui/crates/egui" }
+egui-wgpu     = { path = "../../../solidcraft/vendor/egui/crates/egui-wgpu" }
+egui-winit    = { path = "../../../solidcraft/vendor/egui/crates/egui-winit" }
+egui_glow     = { path = "../../../solidcraft/vendor/egui/crates/egui_glow" }
+emath        = { path = "../../../solidcraft/vendor/egui/crates/emath" }
+ecolor        = { path = "../../../solidcraft/vendor/egui/crates/ecolor" }
+epaint        = { path = "../../../solidcraft/vendor/egui/crates/epaint" }
+epaint_default_fonts = { path = "../../../solidcraft/vendor/egui/crates/epaint_default_fonts" }
+wgpu-hal      = { path = "../../third_party/wgpu-hal-30.0.1" }
 
 [workspace]
