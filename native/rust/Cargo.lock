@@ -141,9 +141,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.104"
+version = "1.0.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
+checksum = "2cb931c189b85683d69a5cfad41d4d418671e1ac413dd209f3f2fc31e3cfd902"
 
 [[package]]
 name = "arbitrary"
@@ -654,9 +654,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.11.2"
+version = "1.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33ef9e3e8154a45c7a95cff4c1299702106ad94062d7bb85fdc5d3a5afd91d45"
+checksum = "02f0e023adb368345ce0ca6cdfc0f24a06554468d0e8503e14a0841de79bfa69"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -907,8 +907,9 @@ dependencies = [
 
 [[package]]
 name = "craft-plugin"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
+ "image",
  "schemars",
  "serde",
  "serde_json",
@@ -917,7 +918,7 @@ dependencies = [
 
 [[package]]
 name = "craft-plugin-wasm"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "cap-std",
  "craft-plugin",
@@ -981,7 +982,7 @@ dependencies = [
  "cranelift-entity",
  "cranelift-isle",
  "gimli",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "libm",
  "log",
  "postcard",
@@ -1043,7 +1044,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b00cf9b20096b09b3499d19f82cca658c13c6988ecbc54881caf12a2f01b2f8c"
 dependencies = [
  "cranelift-codegen",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "log",
  "smallvec",
  "target-lexicon",
@@ -1949,7 +1950,7 @@ checksum = "282a26c1e23de04bdab3e34a21b6f877a479b96737792516b9b8b8f69b6661be"
 dependencies = [
  "bytemuck",
  "foldhash",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "log",
  "peniko",
  "skrifa",
@@ -2085,9 +2086,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.17.1"
+version = "0.17.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
+checksum = "735eaa21a6a5ffb2e84362faaeb90c05ba8e19797ca30428478cb6ea3a4921bc"
 dependencies = [
  "foldhash",
  "serde",
@@ -2220,7 +2221,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cc4e190f5d26ca7051642629da2c52fc03bde85a03197c99408dcd291734c855"
 dependencies = [
  "equivalent",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "serde",
  "serde_core",
 ]
@@ -2304,9 +2305,9 @@ checksum = "3bd1574e617a9a6c1f8f8181bd7e841e1f20e4277607ef28945765188d6284d4"
 
 [[package]]
 name = "jiff"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed5d126d72eb017f10b302e73bdeca446bea405ee449af4d9e7866d6b082d83e"
+checksum = "c5e77cbfb9fff4798e283c2d69dff39fc2c45e7da017e5ce95b654e46ea41236"
 dependencies = [
  "jiff-core",
  "jiff-static",
@@ -2328,9 +2329,9 @@ dependencies = [
 
 [[package]]
 name = "jiff-static"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0127e9bde3c6130d6169e7d8d68676e4be69c4bf7573c308b6f960a5089c428"
+checksum = "e9067a0b23e5be3147d56b2dcf652b18e6b1364caca93fb157653b6fbcab23a9"
 dependencies = [
  "jiff-core",
  "proc-macro2",
@@ -2679,7 +2680,7 @@ dependencies = [
  "cfg_aliases",
  "codespan-reporting",
  "half",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "libm",
  "log",
@@ -2698,7 +2699,7 @@ version = "30.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14474170feb673cfb18b3565111a9869797cc1d290fb9ec969c53f5e1e231c6d"
 dependencies = [
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "rustc-hash 1.1.0",
  "thiserror",
@@ -2966,7 +2967,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2e5a6c098c7a3b6547378093f5cc30bc54fd361ce711e05293a5cc589562739b"
 dependencies = [
  "crc32fast",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "memchr",
 ]
@@ -3292,9 +3293,9 @@ dependencies = [
 
 [[package]]
 name = "postcard"
-version = "1.1.3"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6764c3b5dd454e283a30e6dfe78e9b31096d9e32036b5d1eaac7a6119ccb9a24"
+checksum = "5431b3dcfdf6d1985c87d11f267a171c0dec0a8cd544c6727b747d36365f1fca"
 dependencies = [
  "cobs",
  "embedded-io 0.4.0",
@@ -3557,7 +3558,7 @@ checksum = "34f923657880712029496c2e68bb40bef163806b2011adde559b28bbcedc82ea"
 dependencies = [
  "allocator-api2",
  "bumpalo",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "log",
  "rustc-hash 2.1.3",
  "serde",
@@ -4173,11 +4174,11 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-color"
-version = "0.45.0"
+version = "0.47.0"
 
 [[package]]
 name = "solidcraft-control"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
@@ -4186,7 +4187,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-control-egui"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
  "image",
@@ -4196,7 +4197,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-derive"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4205,7 +4206,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-develop"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "solidcore-ops",
  "solidcore-record",
@@ -4214,7 +4215,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-doc"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "serde",
@@ -4238,8 +4239,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "solidcraft-dynamics"
+version = "0.47.0"
+dependencies = [
+ "serde",
+ "solidcore-record",
+ "solidcraft-geom",
+ "thiserror",
+]
+
+[[package]]
 name = "solidcraft-engine"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "craft-plugin",
  "craft-plugin-wasm",
@@ -4257,6 +4268,7 @@ dependencies = [
  "solidcraft-color",
  "solidcraft-control",
  "solidcraft-doc",
+ "solidcraft-dynamics",
  "solidcraft-geom",
  "solidcraft-io",
  "solidcraft-kernel",
@@ -4266,6 +4278,7 @@ dependencies = [
  "solidcraft-sketch",
  "solidcraft-ui-text",
  "solidcraft-viewport",
+ "solidcraft-views",
  "thiserror",
  "tiny-skia",
  "toml_edit",
@@ -4274,7 +4287,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-format"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "serde_json",
  "sha2 0.10.9",
@@ -4283,7 +4296,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-geom"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "serde",
  "solidcore",
@@ -4295,7 +4308,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-gpu"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "pollster",
@@ -4314,7 +4327,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-hmos"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
  "egui-wgpu",
@@ -4332,7 +4345,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-io"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "cadmpeg-core",
  "cadmpeg-ir",
@@ -4361,6 +4374,7 @@ dependencies = [
  "solidcore-cadir",
  "solidcore-ops",
  "solidcore-record",
+ "solidcore-step",
  "solidcore-tess",
  "solidcraft-color",
  "solidcraft-doc",
@@ -4373,12 +4387,13 @@ dependencies = [
  "thiserror",
  "tiny-skia",
  "trash",
+ "unicode-normalization",
  "zip",
 ]
 
 [[package]]
 name = "solidcraft-kernel"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "rayon",
@@ -4398,7 +4413,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-look"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
  "log",
@@ -4409,7 +4424,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-panel-layout"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "schemars",
  "serde",
@@ -4419,7 +4434,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-profile"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "serde_json",
  "web-time",
@@ -4427,7 +4442,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-render"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "image",
  "moxcms",
@@ -4448,7 +4463,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-sketch"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "harfrust",
  "serde",
@@ -4463,7 +4478,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-smlib"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "serde_json",
@@ -4476,14 +4491,14 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-space-mouse"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "solidcraft-theme"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
  "serde",
@@ -4493,11 +4508,12 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-egui"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "arboard",
  "egui",
  "egui-wgpu",
+ "getrandom 0.2.17",
  "image",
  "log",
  "lopdf",
@@ -4524,6 +4540,7 @@ dependencies = [
  "solidcraft-viewport",
  "solidcraft-viewport-egui",
  "solidcraft-viewport-gpu",
+ "solidcraft-views",
  "tiny-skia",
  "ttf-parser",
  "web-time",
@@ -4533,7 +4550,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-kit"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "arboard",
  "egui",
@@ -4554,14 +4571,14 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-ui-registry"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
 ]
 
 [[package]]
 name = "solidcraft-ui-text"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "serde_json",
@@ -4571,7 +4588,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "image",
  "serde",
@@ -4582,7 +4599,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport-egui"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "egui",
  "egui-wgpu",
@@ -4593,7 +4610,7 @@ dependencies = [
 
 [[package]]
 name = "solidcraft-viewport-gpu"
-version = "0.45.0"
+version = "0.47.0"
 dependencies = [
  "log",
  "pollster",
@@ -4604,6 +4621,16 @@ dependencies = [
  "solidcraft-viewport",
  "thiserror",
  "wgpu",
+]
+
+[[package]]
+name = "solidcraft-views"
+version = "0.47.0"
+dependencies = [
+ "schemars",
+ "serde",
+ "serde_json",
+ "solidcraft-viewport",
 ]
 
 [[package]]
@@ -4883,9 +4910,9 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "1.2.1+spec-1.1.0"
+version = "1.2.2+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5755c51863cdac711f1956baf8eb9588e060755f7d3c4c979e70ea1e1f32cd7"
+checksum = "5426cb1b964690d913f6c5c1a1ae0b42f428ec506bb4d452876d7a209c9bca3b"
 dependencies = [
  "indexmap",
  "serde_core",
@@ -4907,9 +4934,9 @@ dependencies = [
 
 [[package]]
 name = "toml_edit"
-version = "0.25.19+spec-1.1.0"
+version = "0.25.20+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd43688c4858d7264ae1cf9a9f874a67c3feb74a883b1cd7bebd6a4ea8307218"
+checksum = "e76360e201d6dbd6583e17795ba71a88f47365a9139c8450a7979c32303b8e73"
 dependencies = [
  "indexmap",
  "toml_datetime",
@@ -4920,9 +4947,9 @@ dependencies = [
 
 [[package]]
 name = "toml_parser"
-version = "1.1.5+spec-1.1.0"
+version = "1.1.6+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "baa693a8032d7e1cada7d0041e96126df243179ff061456783ac7f12bda4744c"
+checksum = "e6769c452d71ba30696c6b37770c439a9cc9110f47f7d5cdbeda79840ef5ea31"
 dependencies = [
  "winnow",
 ]
@@ -5113,7 +5140,7 @@ checksum = "ace506ca414548966fcf3c283be94eb1cad8254de488791ee698bf438b0890a9"
 dependencies = [
  "bytemuck",
  "glifo",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "vello_common",
 ]
 
@@ -5222,7 +5249,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c5ff8685b587722894b6f25958fc608d315b93b8d23647bfb567664e7006d757"
 dependencies = [
  "bitflags",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "semver",
  "serde",
@@ -5293,7 +5320,7 @@ dependencies = [
  "cranelift-bitset",
  "cranelift-entity",
  "gimli",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "log",
  "object",
@@ -5339,7 +5366,7 @@ version = "48.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1463b7c70e14ab1db19709f29f298affc1f0ea50ea59b519d8aec8a6f5a56453"
 dependencies = [
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "libm",
  "serde",
 ]
@@ -5498,7 +5525,7 @@ dependencies = [
  "cfg-if",
  "cfg_aliases",
  "document-features",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "js-sys",
  "log",
  "naga",
@@ -5529,7 +5556,7 @@ dependencies = [
  "bytemuck",
  "cfg_aliases",
  "document-features",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "indexmap",
  "log",
  "naga",
@@ -5603,7 +5630,7 @@ dependencies = [
  "glow",
  "glutin_wgl_sys",
  "gpu-allocator",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "js-sys",
  "khronos-egl",
  "libc",
@@ -6025,7 +6052,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22672d61bfb9df46a16b46ce38522293aee1cc4749fc84a3464ce4083b3d5fd6"
 dependencies = [
  "anyhow",
- "hashbrown 0.17.1",
+ "hashbrown 0.17.2",
  "id-arena",
  "indexmap",
  "log",
@@ -6083,18 +6110,18 @@ checksum = "e450f9b2ed1dff33c94c12589a87338689467b9c4f5d8a5710bd09a847d2c8a7"
 
 [[package]]
 name = "zerocopy"
-version = "0.8.63"
+version = "0.8.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8"
+checksum = "ed43f3060383c64b000f3c630550aebdfa9d3b76d48de32390483dd2cc7e0865"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.63"
+version = "0.8.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "863ad3ac83293fb4d740aedbfdc9240dd8d1a50c1099acd76ce80ce7c7230c7f"
+checksum = "a5cbd820fe3e35fb38c83b6dc7e6b1618bc46e0cd10073ae94e8d52dc468d8b9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -6123,9 +6150,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "9.8.1"
+version = "9.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9534624d547e3f516ecde0ed9a70d37788f01d340efcfdd03bf3ea8e163c1d0"
+checksum = "2d8dbe089cf6b0448b78f5fc50139ab5aaa40d08ac07cdc1baf2c13add35fcce"
 dependencies = [
  "constant_time_eq",
  "crc32fast",
