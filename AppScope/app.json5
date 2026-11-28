@@ -2,8 +2,8 @@
   "app": {
     "bundleName": "io.github.shaliuxin.solidcraft.hmos",
     "vendor": "solidcraft-hmos",
-    "versionCode": 51001,
-    "versionName": "0.51.1",
+    "versionCode": 51002,
+    "versionName": "0.51.2",
     "icon": "$media:app_icon",
     "label": "$string:app_name"
   }
